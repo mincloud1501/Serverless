@@ -1,10 +1,9 @@
-# Serverless Computing
+# Serverless
 
-Serverless Computing에 대한 개념 파악 및 AWS Lambda를 활용한 실습
 
 ### IaaS (Infrastructure as a Service)
 
-- AWS, Azure 등의 서비스가 만들어지기 시작하여 더 이상 서버자원, 네트워크, 전력 등의 인프라를 모두 직접 구축 할 필요 없어졌다. 이러한 `인프라를 가상화`하여 관리하기 쉽게 해주는 서비스 서비스를 통하여, 관리자 패널에서 인프라를 구성하고 사용하고. 사용자는 가상머신을 만들고, 네트워크를 설정하고, 하드웨어도 설정하고, 거기에 운영체제를 설치해서 애플리케이션을 구동할 수 있다. 또한 사용량을 쉽게 모니터링 할 수 있다.
+- AWS, Azure 등의 서비스가 만들어지기 시작하여 더 이상 서버자원, 네트워크, 전력 등의 인프라를 모두 직접 구축할 필요가 없어졌다. 이러한 `인프라를 가상화`하여 관리하기 쉽게 해주는 서비스 서비스를 통하여, 관리자 패널에서 인프라를 구성하고 사용하고. 사용자는 가상머신을 만들고, 네트워크를 설정하고, 하드웨어도 설정하고, 거기에 운영체제를 설치해서 애플리케이션을 구동할 수 있다. 또한 사용량을 쉽게 모니터링 할 수 있다.
 
 ### PaaS (Platform as a Service)
 
@@ -14,7 +13,7 @@ Serverless Computing에 대한 개념 파악 및 AWS Lambda를 활용한 실습
 
 ---
 
-- Serverless는 서버가 없다는 의미로 `BaaS` (Backend as a Service) 또는 `FaaS` (Function as a Service)로 분류할 수 있다.
+- Serverless는 서버가 없다는 의미로 보통 `Serverless Computing` 또는 `Serverless Architecture`로 불린다. Serverless 개념은 application 관점에서 `BaaS`와 `FaaS`로 나누어 살펴보면 이해가 더 용이하다.
 
 [![Sources](https://img.shields.io/badge/출처-martinfowler-yellow)](https://martinfowler.com/articles/serverless.html)
 [![Sources](https://img.shields.io/badge/출처-serverless-yellow)](https://hackernoon.com/what-is-serverless-architecture-what-are-its-pros-and-cons-cc4b804022e9)
@@ -27,7 +26,9 @@ Serverless Computing에 대한 개념 파악 및 AWS Lambda를 활용한 실습
 - BaaS를 사용함으로서, 발생하는 대표적인 단점으로는 백엔드 로직들이 클라이언트쪽에 구현이 되며, 앱의 규모가 커질수록 비용이 들고, 복잡한 query가 불가능하다.
 
 
-### FaaS (Function as a Service) - ex) AWS Lambda. Azure Functions, Google Functions
+### FaaS (Function as a Service)
+
+![vendor](images/vendor.png)
 
 - FaaS는 프로젝트를 여러개의 함수로 쪼개서 (혹은 한개의 함수로 만들어서), 매우 거대하고 분산된 컴퓨팅 자원에 여러분이 준비해둔 함수를 등록하고, 이 함수들이 실행되는 횟수 (그리고 실행된 시간) 만큼 비용을 내는 방식을 말한다.
 - 서버 시스템에 대해서 신경쓰지 않아도 된다는 점이 PaaS 와 유사하지만, PaaS 의 경우엔, `전체 Application`을 배포하며, 일단 어떠한 서버에서 애플리케이션이 24시간동안 계속 돌아가는 반면에
@@ -41,11 +42,11 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 
 [단점]
 - 모든 코드를 함수로 쪼개서 작업하다 보니, 함수에서 사용할 수 있는 자원에 제한이 있다.
-- FaaS 제공 업체에 강한 의존을 하게 될 수 밖에 없다.
-- 함수들은 Stateless이기 때문에 로컬 데이터의 사용이 불가능하다. (AWS S2, Azure Storage 따로 사용 가능)
+- FaaS 제공 업체에 강하게 의존할 수 밖에 없다.
+- 함수들은 Stateless이기 때문에 로컬 데이터의 사용이 불가능하다. (AWS S2, Azure Storage 따로 사용하면 가능)
 
 
-### ■ Pre-requisites
+### ■ Pre-requisites (AWS Lambda)
 
 - AWS account 생성 (https://portal.aws.amazon.com/)
 - 결재정보 입력 : 확인 목적으로 1$ 결재 후, 몇일 지나면 자동 취소됨
