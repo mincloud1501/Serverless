@@ -47,9 +47,9 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 
 ---
 
-## Create Lambda & Test
+## ■ Create Lambda & Test
 
-### ■ Pre-requisites (AWS Lambda)
+### Pre-requisites (AWS Lambda)
 
 - AWS account 생성 (https://portal.aws.amazon.com/)
 - 결재정보 입력 : 확인 목적으로 1$ 결재 후, 몇일 지나면 자동 취소됨
@@ -57,14 +57,14 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 
 ![account](images/account.png)
 
-### ■ 신규 Lambda 만들기
+### 신규 Lambda 만들기
 
 - AWS에 로그인한 후, Lambda Management Console에 접속하여 함수를 생성한다.
 - AWS 정책 템플릿에서 정책 `CloudWatch Logs`을 추가하여 새 역할을 생성한다.
 
 ![makefunction](images/makefunction.png)
 
-### ■ Lambda 관리하기
+### Lambda 관리하기
 
 ![lambdatest1](images/lambdatest1.png)
 
@@ -99,7 +99,7 @@ END RequestId: c7674760-25da-xxxx-8500-xxxxbf903e53
 REPORT RequestId: c7674760-25da-xxxx-8500-xxxxbf903e53	Duration: 1.74 ms	Billed Duration: 100 ms	Memory Size: 128 MB	Max Memory Used: 66 MB
 ```
 
-### ■ Lambda에 HTTP 주소 부여하기
+### Lambda에 HTTP 주소 부여하기
 
 - 특정 주소로 요청이 오면 해당 함수가 실행되도록 설정을 해보자.
 - `트리거 추가`를 눌러 `API Gateway`를 추가한다.
@@ -124,11 +124,11 @@ exports.handler = (event, context, callback) => {
 
 ---
 
-## Serverless Framework로 Application 생성 및 배포하기
+## ■ Serverless Framework로 Application 생성 및 배포하기
 
 - AWS Lambda, Azure Functions, Google Cloud Functions로 serverless application을 만들때, 단순히 함수들을 작성하는 것 뿐만이 아니라 해당 애플리케이션에서 필요한 아키텍쳐들을 설정해 주어야하는데 Serverless를 사용하면 간단하게 애플리케이션을 만들고 배포할 수 있다.
 
-### ■ Pre-requisites (Node.js, npm)
+### Pre-requisites (Node.js, npm)
 
 - Installation Serverless
 
@@ -150,7 +150,7 @@ SDK: 2.3.0
 Components: 2.29.3
 ```
 
-## Serverless Platform Login
+## ■ Serverless Platform Login
 
 - 다음 명령을 실행하며, https://dashboard.serverless.com 으로 자동 연결된다.
 
@@ -188,7 +188,7 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ---
 
-## AWS User 및 Credential 만들기
+## ■ AWS User 및 Credential 만들기
 
 - Serverless framework를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
 - IAM에서 사용자 추가 메뉴에서 사용자 이름 입력 후 프로그래밍 방식 액세스를 선택한다.
@@ -211,7 +211,7 @@ Serverless: Setting up AWS...
 
 ---
 
-## Serverless Template을 이용하여 Application 생성하기
+## ■ Serverless Template을 이용하여 Application 생성하기
 
 ```bash
 $ sls create -t
@@ -295,7 +295,7 @@ module.exports.hello = async event => {
 };
 ```
 
-<server.yml>
+<serverless.yml>
 
 ```js
 // 모든 주석 제외
