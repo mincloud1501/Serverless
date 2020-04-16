@@ -45,6 +45,9 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 - FaaS 제공 업체에 강하게 의존할 수 밖에 없다.
 - 함수들은 Stateless이기 때문에 로컬 데이터의 사용이 불가능하다. (AWS S2, Azure Storage 따로 사용하면 가능)
 
+---
+
+## Create Lambda & Test
 
 ### ■ Pre-requisites (AWS Lambda)
 
@@ -118,3 +121,63 @@ exports.handler = (event, context, callback) => {
     });
 };
 ```
+
+---
+
+## Serverless Framework로 Application 생성 및 배포하기
+
+- AWS Lambda, Azure Functions, Google Cloud Functions로 serverless application을 만들때, 단순히 함수들을 작성하는 것 뿐만이 아니라 해당 애플리케이션에서 필요한 아키텍쳐들을 설정해 주어야하는데 Serverless를 사용하면 간단하게 애플리케이션을 만들고 배포할 수 있다.
+
+### ■ Pre-requisites (Node.js, npm)
+
+- Installation Serverless
+
+```bash
+$ npm install -g serverless
+> serverless@1.67.3 postinstall
+> node ./scripts/postinstall.js
+   ┌───────────────────────────────────────────────────┐
+   │                                                   │
+   │   Serverless Framework successfully installed!    │
+   │                                                   │
+   │   To start your first project run 'serverless'.   │
+   │                                                   │
+   └───────────────────────────────────────────────────┘
+$ sls --version
+Framework Core: 1.67.3
+Plugin: 3.6.6
+SDK: 2.3.0
+Components: 2.29.3
+```
+
+### Serverless Platform Login
+
+- 다음 명령을 실행하며, https://dashboard.serverless.com 으로 자동 연결된다.
+
+```bash
+$ sls Login
+Serverless: Logging you in via your default browser...
+If your browser does not open automatically, please open it &  open the URL below to log in:
+```
+
+- you are creating a node.js rest api
+
+![serverlesslogin1](images/serverlesslogin1.png)
+
+- connect your cloud service provider (Connect AWS)
+
+![serverlesslogin2](images/serverlesslogin2.png)
+
+![serverlesslogin3](images/serverlesslogin3.png)
+
+![serverlesslogin4](images/serverlesslogin4.png)
+
+- connect a github account
+
+![serverlesslogin5](images/serverlesslogin5.png)
+
+- new service Test
+
+![serverlesslogin6](images/serverlesslogin6.png)
+
+- Serverless framework를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
