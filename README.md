@@ -54,7 +54,67 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 
 ![account](images/account.png)
 
-■ new Lambda 만들기
+### ■ 신규 Lambda 만들기
 
-- AWS에 로그인한 후, Lambda Management Console에 접속한다.
+- AWS에 로그인한 후, Lambda Management Console에 접속하여 함수를 생성한다.
+- AWS 정책 템플릿에서 정책 `CloudWatch Logs`을 추가하여 새 역할을 생성한다.
 
+![makefunction](images/makefunction.png)
+
+### ■ Lambda 관리하기
+
+![lambdatest1](images/lambdatest1.png)
+
+- 함수는 호출되면 ‘Hello from Lambda!’ 를 응답하도록 설정되어 있다. 페이지 상단의 테스트 버튼을 눌러 테스트 이벤트를 구성한 후, 이 함수를 테스트 합니다.
+
+```js
+exports.handler = async (event) => {
+    // TODO implement
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('Hello from Lambda!'),
+    };
+    return response;
+};
+```
+
+- 다음과 같이 Response 정보 볼 수 있는데, 이렇게 만든 Lambda는, 따로 설정해주지 않으면 AWS 웹서비스, CLI로만 실행할 수 있다.
+
+```js
+Response:
+{
+  "statusCode": 200,
+  "body": "\"Hello from Lambda!\""
+}
+
+Request ID:
+"c7674760-25da-xxxx-8500-xxxxbf903e53"
+
+Function Logs:
+START RequestId: c7674760-25da-xxxx-8500-xxxxbf903e53 Version: $LATEST
+END RequestId: c7674760-25da-xxxx-8500-xxxxbf903e53
+REPORT RequestId: c7674760-25da-xxxx-8500-xxxxbf903e53	Duration: 1.74 ms	Billed Duration: 100 ms	Memory Size: 128 MB	Max Memory Used: 66 MB
+```
+
+### ■ Lambda에 HTTP 주소 부여하기
+
+- 특정 주소로 요청이 오면 해당 함수가 실행되도록 설정을 해보자.
+- `트리거 추가`를 눌러 `API Gateway`를 추가한다.
+- 보안 부분에는 `열기`로 설정한다. 이는 해당 API 를 모두에게 열어 주겠다는 의미로 필요에 따라 보안 설정을 하여 권한이 있는 사람만 호출 할 수 있도록 설정 할 수도 있다.
+
+![addtrigger](images/addtrigger.png)
+
+-  HTTP를 동해 응답을 받으려면, 콜백을 통해 응답하는 부분을 HTTP 응답 형식으로 바꿔주어야 한다.
+
+![addgateway](images/addgateway.png)
+
+- Designer 부분에서 루트노드인 lambda 함수를 다시 클릭하여 함수 내용을 다음과 설정한 후 API 엔드포인트: https://jshoj0njoc.execute-api.us-east-2.amazonaws.com/default/myLambdaTest1 로 접근하면 broswer에서 접근이 가능하다.
+
+```js
+exports.handler = (event, context, callback) => {
+    callback(null, {
+        statusCode: 200,
+        body: 'Hello from Lambda! from HTTP'
+    });
+};
+```
