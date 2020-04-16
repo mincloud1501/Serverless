@@ -168,6 +168,8 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ![serverlesslogin2](images/serverlesslogin2.png)
 
+- AWS CloudFormation에서 빠른 스택 생성
+
 ![serverlesslogin3](images/serverlesslogin3.png)
 
 ![serverlesslogin4](images/serverlesslogin4.png)
@@ -180,4 +182,24 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ![serverlesslogin6](images/serverlesslogin6.png)
 
+- monitoring
+
+![serverlesslogin7](images/serverlesslogin7.png)
+
+---
+
+### AWS User 및 Credential 만들기
+
 - Serverless framework를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
+- IAM에서 사용자 추가 메뉴에서 사용자 이름 입력 후 프로그래밍 방식 액세스를 선택한다.
+
+![adduser1](images/adduser1.png)
+
+- 기존 정책에 직접 연결을 선택 후 `AdministratorAccess`, `AmazonAPIGatewayAdministrator`, `AWSLambdaBasicExecutionRole`, `AWSCloudFormationFullAccess` 등 필요한 권한들을 선택한다.
+
+![adduser2](images/adduser2.png)
+
+- Access Key ID 와 비밀 Access Key를 잘 기억하고, 노출되지 않도록 보안에 유의합니다.
+
+![adduser3](images/adduser3.png)
+
