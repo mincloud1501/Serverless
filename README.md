@@ -150,7 +150,7 @@ SDK: 2.3.0
 Components: 2.29.3
 ```
 
-### Serverless Platform Login
+## Serverless Platform Login
 
 - 다음 명령을 실행하며, https://dashboard.serverless.com 으로 자동 연결된다.
 
@@ -188,7 +188,7 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ---
 
-### AWS User 및 Credential 만들기
+## AWS User 및 Credential 만들기
 
 - Serverless framework를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
 - IAM에서 사용자 추가 메뉴에서 사용자 이름 입력 후 프로그래밍 방식 액세스를 선택한다.
@@ -203,3 +203,182 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ![adduser3](images/adduser3.png)
 
+```bash
+$ serverless config credentials --provider aws --key 액세스키ID --secret 비밀액세스키
+
+Serverless: Setting up AWS...
+```
+
+---
+
+## Serverless Template을 이용하여 Application 생성하기
+
+```bash
+$ sls create -t
+
+Serverless: Generating boilerplate...
+
+  Serverless Error ---------------------------------------
+
+  Template "true" is not supported. Supported templates are:
+       "aws-clojure-gradle", "aws-clojurescript-gradle", "aws-nodejs", "aws-nodejs-typescript", "aws-alexa-typescript", "aws-nodejs-ecma-script", "aws-python", "aws-python3"
+       "aws-groovy-gradle", "aws-java-maven", "aws-java-gradle", "aws-kotlin-jvm-maven", "aws-kotlin-jvm-gradle", "aws-kotlin-nodejs-gradle", "aws-scala-sbt", "aws-csharp"
+       "aws-fsharp", "aws-go", "aws-go-dep", "aws-go-mod", "aws-ruby", "aws-provided"
+       "tencent-go", "tencent-nodejs", "tencent-python", "tencent-php"
+       "azure-nodejs", "azure-nodejs-typescript", "azure-python"
+       "cloudflare-workers", "cloudflare-workers-enterprise", "cloudflare-workers-rust"
+       "fn-nodejs", "fn-go"
+       "google-nodejs", "google-python", "google-go"
+       "kubeless-python", "kubeless-nodejs"
+       "knative-docker"
+       "openwhisk-java-maven", "openwhisk-nodejs", "openwhisk-php", "openwhisk-python", "openwhisk-ruby", "openwhisk-swift"
+       "spotinst-nodejs", "spotinst-python", "spotinst-ruby", "spotinst-java8"
+       "twilio-nodejs"
+       "aliyun-nodejs"
+       "plugin"
+       "hello-world".
+
+  Get Support --------------------------------------------
+     Docs:          docs.serverless.com
+     Bugs:          github.com/serverless/serverless/issues
+     Issues:        forum.serverless.com
+
+  Your Environment Information ---------------------------
+     Operating System:          win32
+     Node Version:              12.14.0
+     Framework Version:         1.67.3
+     Plugin Version:            3.6.6
+     SDK Version:               2.3.0
+     Components Version:        2.29.3
+```
+
+- 위와 같이 `Serverless Error`가 발생하면, template 목록 중 `aws-nodejs`를 사용해 보자.
+
+```bash
+$ sls create -t aws-nodejs -p hello-serverless
+
+Serverless: Generating boilerplate...
+Serverless: Generating boilerplate in "~~~"
+ _______                             __
+|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
+|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
+|   |   |             The Serverless Application Framework
+|       |                           serverless.com, v1.67.3
+ -------'
+
+Serverless: Successfully generated boilerplate for template: "aws-nodejs"
+```
+
+- `hello-serverless` directory에 `handler.js` 파일과 `serverless.yml` 파일이 생성된다.
+
+<handler.js>
+
+```js
+'use strict';
+
+module.exports.hello = async event => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      {
+        message: 'Go Serverless v1.0! Your function executed successfully!',
+        input: event,
+      },
+      null,
+      2
+    ),
+  };
+
+  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
+  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+};
+```
+
+<server.yml>
+
+```js
+// 모든 주석 제외
+service: hello-serverless
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  hello:
+    handler: handler.hello
+```
+
+### `hello-serverless` directory에서 Function 호출하기
+
+```bash
+$ serverless invoke local --function hello
+
+{
+    "statusCode": 200,
+    "body": "{\"message\":\"Go Serverless v1.0! Your function executed successfully!\",\"input\":\"\"}"
+}
+```
+
+### serverless.yml 수정 후 배포하기
+
+- `region`은 AWS에서 배포할 지역을 설정하는데, 기본으로 미국(`us-east-2`)으로 설정된다. (`ap-northeast-2`는 한국). `stage`는 현재 애플리케이션의 배포 상태를 의미하며 prod나 dev로 설정할 수 있다.
+- 추가로 hello 함수에서 events 값을 추가하여 API Gatway와 연결한다.
+
+```js
+service: hello-serverless
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+
+functions:
+  hello:
+    handler: handler.hello
+    events: 
+      - http:
+          path: hello
+          method: get
+```
+
+```bash
+$ sls deploy
+
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Creating Stack...
+Serverless: Checking Stack create progress...
+........
+Serverless: Stack create finished...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service hello-serverless.zip file to S3 (389 B)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............................
+Serverless: Stack update finished...
+Service Information
+service: hello-serverless
+stage: dev
+region: us-east-2
+stack: hello-serverless-dev
+resources: 11
+api keys:
+  None
+endpoints:
+  GET - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/hello
+functions:
+  hello: hello-serverless-dev-hello
+layers:
+  None
+Serverless: Run the "serverless" command to setup monitoring, troubleshooting and testing.
+```
+
+- https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/hello 에 접속하여 API Request를 확인한다.
+- serverless.yml에서 수정 후 deploy한 `hello-serverless-dev-hello` 함수가 생성되어 있음을 확인할 수 있다.
+
+![deploy](images/deploy.png)
