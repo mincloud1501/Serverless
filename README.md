@@ -532,7 +532,7 @@ found 0 vulnerabilities
 ![mongodblogin](images/mongodblogin.png)
 
 
-### Book Model 만들기
+### Book Model 만들고 mongoose 연결하기
 
 - DB Schema를 위한 model을 정의하여 `books.js`에서 연결한다.
 
@@ -600,3 +600,18 @@ exports.createBook = (event, ctx, cb) => {
 
 ![mongodbmonitoring](images/mongodbmonitoring.png)
 
+
+### 다른 함수들 테스트
+
+- [createBook] POST https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books
+
+```json
+{
+  "title": "제목",
+  "body": "내용"
+}
+```
+
+- [readBooks] GET https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/
+- [readBook]  GET https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/5e9d607040d46e0007d247db
+- [deleteBook] DELETE https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/5e9d607040d46e0007d247db
