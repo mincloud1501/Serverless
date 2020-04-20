@@ -126,7 +126,7 @@ exports.handler = (event, context, callback) => {
 
 ## ■ Serverless Framework로 Application 생성 및 배포하기
 
-- AWS Lambda, Azure Functions, Google Cloud Functions로 serverless application을 만들때, 단순히 함수들을 작성하는 것 뿐만이 아니라 해당 애플리케이션에서 필요한 아키텍쳐들을 설정해 주어야하는데 Serverless를 사용하면 간단하게 애플리케이션을 만들고 배포할 수 있다.
+- AWS Lambda, Azure Functions, Google Cloud Functions로 serverless application을 만들 때, 단순히 함수들을 작성하는 것 뿐만이 아니라 해당 애플리케이션에서 필요한 아키텍쳐들을 설정해 주어야하는데 Serverless를 사용하면 간단하게 애플리케이션을 만들고 배포할 수 있다.
 
 ### Pre-requisites (Node.js, npm)
 
@@ -152,7 +152,7 @@ Components: 2.29.3
 
 ## ■ Serverless Platform Login
 
-- 다음 명령을 실행하며, https://dashboard.serverless.com 으로 자동 연결된다.
+- 다음 명령을 실행하면, https://dashboard.serverless.com 으로 자동 연결된다.
 
 ```bash
 $ sls Login
@@ -199,7 +199,7 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ![adduser2](images/adduser2.png)
 
-- Access Key ID 와 비밀 Access Key를 잘 기억하고, 노출되지 않도록 보안에 유의합니다.
+- Access Key ID 와 비밀 Access Key를 잘 기억하고, 노출되지 않도록 보안에 유의한다.
 
 ![adduser3](images/adduser3.png)
 
@@ -382,3 +382,221 @@ Serverless: Run the "serverless" command to setup monitoring, troubleshooting an
 - serverless.yml에서 수정 후 deploy한 `hello-serverless-dev-hello` 함수가 생성되어 있음을 확인할 수 있다.
 
 ![deploy](images/deploy.png)
+
+---
+
+## ■ 여러 개의 함수 생성하기
+
+- src 디렉토리에 Node.js기반 REST API 함수(books.js)를 생성한다.
+
+<books.js>
+
+```js
+const createResponse = (status, body) => ({
+  statusCode: status,
+  body: JSON.stringify(body)
+});
+
+exports.createBook = (event, ctx, cb) => {
+  cb(null, createResponse(200, { message: 'create' }));
+};
+
+exports.readBooks = (event, ctx, cb) => {
+  cb(null, createResponse(200, { message: 'list' }));
+};
+
+exports.readBook = (event, ctx, cb) => {
+  cb(null, createResponse(200, { message: 'read' }));
+};
+
+exports.updateBook = (event, ctx, cb) => {
+  cb(null, createResponse(200, { message: 'update' }));
+};
+
+exports.deleteBook = (event, ctx, cb) => {
+  cb(null, createResponse(200, { message: 'delete' }));
+};
+```
+
+- serverless.yml을 수정하여 각 함수에 API 주소를 연결한다.
+
+```js
+service: hello-serverless
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+
+functions:
+  createBook:
+    handler: src/books.createBook
+    events:
+      - http:
+          path: books
+          method: post
+  readBooks:
+    handler: src/books.readBooks
+    events:
+      - http:
+          path: books
+          method: get
+  readBook:
+    handler: src/books.readBook
+    events:
+      - http:
+          path: books/{id}
+          method: get
+  updateBook:
+    handler: src/books.updateBook
+    events:
+      - http:
+          path: books/{id}
+          method: patch
+  deleteBook:
+    handler: src/books.deleteBook
+    events:
+      - http:
+          path: books/{id}
+          method: delete
+```
+
+- 코드 저장 후, 생성한 여러 개 함수를 배포해 보자.
+
+```bash
+$ sls deploy
+
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service hello-serverless.zip file to S3 (701 B)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+....................................................................................................
+Serverless: Stack update finished...
+Service Information
+service: hello-serverless
+stage: dev
+region: us-east-2
+stack: hello-serverless-dev
+resources: 32
+api keys:
+  None
+endpoints:
+  POST - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books
+  GET - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books
+  GET - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/{id}
+  PATCH - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/{id}
+  DELETE - https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/{id}
+functions:
+  createBook: hello-serverless-dev-createBook
+  readBooks: hello-serverless-dev-readBooks
+  readBook: hello-serverless-dev-readBook
+  updateBook: hello-serverless-dev-updateBook
+  deleteBook: hello-serverless-dev-deleteBook
+layers:
+  None
+Serverless: Run the "serverless" command to setup monitoring, troubleshooting and testing.
+```
+
+![addfunctions](images/addfunctions.png)
+
+### MongoDB용 Library 설치
+
+- package.json 파일 생성 후, MongoDB ODM인 `mongoose` Library를 설치한다.
+
+```bash
+$ npm init
+$ npm i --save mongoose
+
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN hello-serverless@1.0.0 No description
+npm WARN hello-serverless@1.0.0 No repository field.
+
++ mongoose@5.9.9
+added 30 packages from 18 contributors and audited 38 packages in 5.056s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+### mLab에서 mongoDB.Atlas로 Cluster 추가하기 [![Sources](https://img.shields.io/badge/출처-mlab-yellow)](https://mlab.com/)
+
+- DaaS(Database-as-a-Service) 업체인 mlab에 접속하여, sing up/in후 free 500MB 선택하여 `Build a New Cluster` 실행
+
+![mongodblogin](images/mongodblogin.png)
+
+
+### Book Model 만들기
+
+- DB Schema를 위한 model을 정의하여 `books.js`에서 연결한다.
+
+<book.js>
+
+```js
+const mongoose = require('mongoose');
+
+const StorySchema = new mongoose.Schema({
+  title: String,
+  body: String
+});
+
+const Book = mongoose.model('Book', BookSchema);
+
+module.exports = Book;
+```
+
+- mongoose 연결을 위한 URI를 복사하여 `books.js`에 붙여 넣는다.
+
+![connectdburi](images/connectdburi.png)
+
+<books.js>
+
+```js
+const mongoose = require('mongoose');
+const Book = require('./book');
+
+const connect = () => {
+  return mongoose.connect('mongodb+srv://mincloud:<password>@cluster0-i1dcg.mongodb.net/test?retryWrites=true&w=majority');
+};
+
+const createResponse = (status, body) => ({
+  statusCode: status,
+  body: JSON.stringify(body)
+});
+
+exports.createBook = (event, ctx, cb) => {
+  ctx.callbackWaitsForEmptyEventLoop = false;
+  const { title, body } = JSON.parse(event.body);
+  connect().then(
+    () => {
+      const book = new Book({ title, body });
+      return book.save();
+    }
+  ).then(
+    story => {
+      cb(null, createResponse(200, Book));
+    }
+  ).catch(
+    e => cb(e)
+  );
+};
+```
+
+- `sls deploy`하여 aws의 function `hello-serverless-dev-createBook`에서 이벤트 테스트를 수행하여 정상 여부를 확인한다.
+
+![createbook_result1](images/createbook_result1.png)
+
+- 해당 결과는 Postman을 통해서도 확인해 볼 수 있다.
+
+![createbook_result2](images/createbook_result2.png)
+
+- mongoDB.Atlas에서 DB Status에 대해 종합적으로 모니터링이 가능하다.
+
+![mongodbmonitoring](images/mongodbmonitoring.png)
+

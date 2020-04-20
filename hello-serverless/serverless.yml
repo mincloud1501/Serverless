@@ -58,15 +58,45 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  createBook:
+    handler: src/books.createBook
+    events:
+      - http:
+          path: books
+          method: post
+  readBooks:
+    handler: src/books.readBooks
+    events:
+      - http:
+          path: books
+          method: get
+  readBook:
+    handler: src/books.readBook
+    events:
+      - http:
+          path: books/{id}
+          method: get
+  updateBook:
+    handler: src/books.updateBook
+    events:
+      - http:
+          path: books/{id}
+          method: patch
+  deleteBook:
+    handler: src/books.deleteBook
+    events:
+      - http:
+          path: books/{id}
+          method: delete
+#  hello:
+#    handler: handler.hello
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
-    events:
-      - http:
-          path: hello
-          method: get
+#    events:
+#      - http:
+#          path: hello
+#          method: get
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
