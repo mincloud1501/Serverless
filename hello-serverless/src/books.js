@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 const Book = require('./book');
 
 mongoose.Promise = Promise;
-const mongoString  = 'mongodb+srv://mincloud:mincloud1501@mincloud-ukgxp.mongodb.net/test?retryWrites=true&w=majority';
+const mongoString  = 'mongodb+srv://mincloud:<password>@mincloud-ukgxp.mongodb.net/test?retryWrites=true&w=majority';
 
 const createErrorResponse = (statusCode, message) => ({
   statusCode: statusCode || 501,
