@@ -13,6 +13,18 @@
 
 ---
 
+## ■ Serverless Concept
+
+- Serverless는 IT Infra를 Data Center 또는 Cloud에 별도 준비 없이, 필요한 기능을 함수(function) 형태로 구현하고, Auto Scaling으로 자원 수요를 지원하며 전통적인 백엔드 대신 사용한다.
+
+![changeinfra](images/changeinfra.png)
+
+- Serverless는 Cloud 사업자가 운영하는 가상화된 컨테이너에서 실행된다. 미리 필요한 기능을 serverless에 원하는 programming language로 function 형태로 구현을 해두고, event driven 방식으로 필요에 따라 이 함수를 호출하여 사용한다.
+- 초기의 serverless function은 script 형태의 언어인 `Node.js`만을 지원했지만 현재는 `Python`, `Javascript`, `C#`, `Java` 등의 대표적인 객체지향 프로그래밍 언어와, 자체 개발한 library package를 일반적으로 지원한다.
+- Serverless Function은 또 다른 API를 호출하거나, 필요한 데이터를 데이터베이스에 저장 후 분석 작업 등을 할 수 있고, 동시 트랜잭션의 순차 처리를 위한 메시지큐나, 다른 클라우드 서비스와도 연계됳 수 있다.
+- Serverless는 시스템 상의 다양한 이벤트를 함수의 형태로 처리하는 특징을 가지고 있기 때문에, IT 서비스 운영시 예상되는 반복적인 batch 처리 형태의 기능에 알맞다. 예를 들어, 반복적으로 타 시스템과 연계하여 비즈니스 요구사항에 맞는 결과를 가져오는 기능에 좀 더 특화되어 있다고 볼 수 있다.
+- Serverless의 도입이 제일 알맞은 조직은 인프라에 대한 준비와 운영 인력을 최소화해야 하는 소규모 기술 인력으로, 비즈니스를 개발하여 빠르게 시장에 진입하는 스타트업 형태의 개발 조직에 알맞다고 볼 수 있다.
+
 - Serverless는 서버가 없다는 의미로 보통 `Serverless Computing` 또는 `Serverless Architecture`로 불린다. Serverless 개념은 application 관점에서 `BaaS`와 `FaaS`로 나누어 살펴보면 이해가 더 용이하다.
 
 [![Sources](https://img.shields.io/badge/출처-martinfowler-yellow)](https://martinfowler.com/articles/serverless.html)
@@ -24,7 +36,6 @@
 
 - 백엔드 서버 개발을 하다보면, 서버의 확장도 고려해야 하고, 보안성 또한 고려해야 하는데, 앱 개발에 있어서 필요한 다양한 기능들 (데이터베이스, 소셜서비스 연동, 파일시스템 등)을 API로 제공해 줌으로써, 개발자들이 서버 개발을 하지 않고서도 필요한 기능을 쉽고 빠르게 구현 할 수 있게 해주고, 비용은 사용 한 만큼 지불하는 형태의 서비스를 말한다.
 - BaaS를 사용함으로서, 발생하는 대표적인 단점으로는 백엔드 로직들이 클라이언트쪽에 구현이 되며, 앱의 규모가 커질수록 비용이 들고, 복잡한 query가 불가능하다.
-
 
 ### FaaS (Function as a Service)
 
@@ -44,6 +55,21 @@ FaaS 는, application이 아닌 `함수(Function)`를 배포하며, 계속 실�
 - 모든 코드를 함수로 쪼개서 작업하다 보니, 함수에서 사용할 수 있는 자원에 제한이 있다.
 - FaaS 제공 업체에 강하게 의존할 수 밖에 없다.
 - 함수들은 Stateless이기 때문에 로컬 데이터의 사용이 불가능하다. (AWS S2, Azure Storage 따로 사용하면 가능)
+
+### Serverless 도입 유의 사항
+
+```
+1. 과금 방식의 이해와 예상 비용 산정
+	- transaction이 별로 없는 유휴 시간이 많은 서비스의 경우 좀 더 경제적인 모델이 될 수 있으나, 함수의 컴퓨팅 자원 소모 비용에 대한 산정 필요
+2. 조직 내 기술 내재화
+	- Public Cloud에 대한 이해와 기술력이 충분한지 확인 (no-ops, less-ops) 및 신속한 application 개발 역량 필요
+3. 성능 저하 대비책
+	- Cold Start 방식의 함수 운용 방안 등 전반적인 응답 속도 개선에 대한 고민이 필요
+4. 도입 서비스 순서 결정
+	- 모든 백엔드 로직을 모두 serverless 환경으로 도입하기 보다는 단순 반복 처리를 위한 batch 작업 형태의 backend server logic, 빅데이터 분석, 머신러닝 등의 서비스를 우선 고려하는 것이 필요
+5. Migration 방안
+	- Cloud Vendor에 일부 종속성을 가지게 되는 부분에 대한 고민이 필요
+```
 
 ---
 

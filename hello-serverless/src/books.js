@@ -1,14 +1,52 @@
 const mongoose = require('mongoose');
+const Promise = require('bluebird');
+
 const Book = require('./book');
 
+mongoose.Promise = Promise;
+const mongoString  = 'mongodb+srv://mincloud:mincloud1501@mincloud-ukgxp.mongodb.net/test?retryWrites=true&w=majority';
+
+const createErrorResponse = (statusCode, message) => ({
+  statusCode: statusCode || 501,
+  headers: { 'Content-Type': 'text/plain' },
+  body: message || 'Incorrect id',
+});
+
+const dbExecute = (db, fn) => db.then(fn).finally(() => db.close());
+
+function dbConnectAndExecute(dbUrl, fn) {
+  return dbExecute(mongoose.connect(dbUrl, { useMongoClient: true }), fn);
+}
+
 const connect = () => {
-  return mongoose.connect('mongodb+srv://mincloud:<password>@mincloud-ukgxp.mongodb.net/test?retryWrites=true&w=majority');
+  return mongoose.connect(mongoString);
 };
 
+///////////////////////////////////////////////////////////////////////////
 const createResponse = (status, body) => ({
   statusCode: status,
   body: JSON.stringify(body)
 });
+
+exports.readBooks = (event, ctx, callback) => {
+   ctx.callbackWaitsForEmptyEventLoop = false;
+   dbConnectAndExecute(mongoString, () => (
+    Book
+      .find().sort({ _id: -1 }).limit(20).lean().exec()
+      .then(book => callback(null, createResponse(200, book)))
+      .catch(err => callback(null, createErrorResponse(err.statusCode, err.message)))
+   ));
+};
+
+exports.readBook = (event, ctx, callback) => {
+  ctx.callbackWaitsForEmptyEventLoop = false;
+  dbConnectAndExecute(mongoString, () => (
+    Book
+      .find({ _id: event.pathParameters.id })
+      .then(book => callback(null, createResponse(200, book)))
+      .catch(err => callback(null, createErrorResponse(err.statusCode, err.message)))
+  ));
+};
 
 exports.createBook = (event, ctx, cb) => {
   ctx.callbackWaitsForEmptyEventLoop = false;
@@ -24,29 +62,6 @@ exports.createBook = (event, ctx, cb) => {
     }
   ).catch(
     e => cb(e)
-  );
-};
-
-exports.readBooks = (event, ctx, cb) => {
-  ctx.callbackWaitsForEmptyEventLoop = false;
-  connect().then(
-    () => Book.find().sort({ _id: -1 }).limit(20).lean().exec()
-  ).then(
-    book => cb(null, createResponse(200, book))
-  );
-};
-
-exports.readBook = (event, ctx, cb) => {
-  ctx.callbackWaitsForEmptyEventLoop = false;
-  connect().then(
-    () => Book.findById(event.pathParameters.id).exec()
-  ).then(
-    book => {
-      if (!book) {
-        return cb(null, { statusCode: 404 });
-      }
-      cb(null, createResponse(200, book));
-    }
   );
 };
 
