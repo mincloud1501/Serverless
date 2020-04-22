@@ -685,6 +685,10 @@ exports.createBook = (event, ctx, cb) => {
 
 ![awsxray](images/awsxray.png)
 
+- X-Ray가 설정된 전체 서비스 맵 및 서비스별 세부정보를 확인할 수 있다.
+
+![servicemap](images/servicemap.png)
+
 - 설정된 해당 함수의 X-Ray 트레이스를 확인할 수 있다.
 
 ![xraytrace](images/xraytrace.png)
