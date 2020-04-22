@@ -178,6 +178,10 @@ Components: 2.29.3
 
 ## ■ Serverless Platform Login
 
+- 다음과 같은 Deploy Pipeline 설정이 가능하지만, 본 예제에서는 Serverless Platform을 사용한다.
+
+![deploypipeline](images/deploypipeline.png)
+
 - 다음 명령을 실행하면, https://dashboard.serverless.com 으로 자동 연결된다.
 
 ```bash
@@ -186,29 +190,29 @@ Serverless: Logging you in via your default browser...
 If your browser does not open automatically, please open it &  open the URL below to log in:
 ```
 
-- you are creating a node.js rest api
+1. you are creating a node.js rest api
 
 ![serverlesslogin1](images/serverlesslogin1.png)
 
-- connect your cloud service provider (Connect AWS)
+2. connect your cloud service provider (Connect AWS)
 
 ![serverlesslogin2](images/serverlesslogin2.png)
 
-- AWS CloudFormation에서 빠른 스택 생성
+3. AWS CloudFormation에서 빠른 스택 생성
 
 ![serverlesslogin3](images/serverlesslogin3.png)
 
 ![serverlesslogin4](images/serverlesslogin4.png)
 
-- connect a github account
+4. connect a github account
 
 ![serverlesslogin5](images/serverlesslogin5.png)
 
-- new service Test
+5. new service Test
 
 ![serverlesslogin6](images/serverlesslogin6.png)
 
-- monitoring
+6. monitoring
 
 ![serverlesslogin7](images/serverlesslogin7.png)
 
@@ -216,7 +220,7 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ## ■ AWS User 및 Credential 만들기
 
-- Serverless framework를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
+- `Serverless Framework`를 통하여 AWS에 my application을 배포하기 위해, framework가 해당 작업을 진행해 줄 수 있도록 권한 설정을 해 주어야 한다.
 - IAM에서 사용자 추가 메뉴에서 사용자 이름 입력 후 프로그래밍 방식 액세스를 선택한다.
 
 ![adduser1](images/adduser1.png)
@@ -641,3 +645,18 @@ exports.createBook = (event, ctx, cb) => {
 - [readBooks] GET https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/
 - [readBook]  GET https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/5e9d607040d46e0007d247db
 - [deleteBook] DELETE https://jt7pzr1i7i.execute-api.us-east-2.amazonaws.com/dev/books/5e9d607040d46e0007d247db
+
+---
+
+## ■ AWS Lambda 모니터링
+
+- AWS Lambda Monitoring을 위해 대시보드 선택 (`AWS Lambda`,`Amazon API Gateway`,`Amazon S3`)하여, `Invocations`,`Errors`,`Duration (average)
+`,`ConcurrentExecutions` 의 모니터링이 가능하다.
+
+![awslambda_monitoring](images/awslambda_monitoring.png)
+
+- 또한, `CloudWatch Logs` 정책 추가를 통해 CloudWatch 모니터링 형태도 가능하다.
+
+![cloudwatch_dashboard](images/cloudwatch_dashboard.png)
+
+![cloudwatch_logs](images/cloudwatch_logs.png)
