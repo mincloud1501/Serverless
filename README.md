@@ -650,13 +650,45 @@ exports.createBook = (event, ctx, cb) => {
 
 ## ■ AWS Lambda 모니터링
 
-- AWS Lambda Monitoring을 위해 대시보드 선택 (`AWS Lambda`,`Amazon API Gateway`,`Amazon S3`)하여, `Invocations`,`Errors`,`Duration (average)
-`,`ConcurrentExecutions` 의 모니터링이 가능하다.
+- AWS Lambda Monitoring을 위해 대시보드 선택 (`AWS Lambda`,`Amazon API Gateway`,`Amazon S3`)하여, 아래 Metric들의 모니터링이 가능하다.
+	- `Invocations` : 5분 기간 동안 함수가 호출된 횟수입니다.
+	- `Duration` : 평균, 최소, 최대 실행 시간입니다.
+	- `오류 수 및 성공률(%)` : 오류 수 및 오류 없이 완료된 실행의 비율입니다.
+	- `Throttles` : 동시성 한도로 인해 실행에 실패한 횟수입니다.
+	- `IteratorAge` : 스트림 이벤트 소스에서 Lambda가 배치의 마지막 항목을 받아 함수를 호출했을 때 해당 항목의 수명입니다.
+	- `Async delivery failures(비동기 전송 실패)` : Lambda가 대상 또는 배달 못한 편지 대기열에 쓰려고 할 때 발생한 오류의 개수입니다.
+	- `Concurrent executions(동시 실행)` : 이벤트를 처리 중인 함수 인스턴스의 개수입니다.
 
 ![awslambda_monitoring](images/awslambda_monitoring.png)
 
 - 또한, `CloudWatch Logs` 정책 추가를 통해 CloudWatch 모니터링 형태도 가능하다.
+- Lambda은 사용자의 함수에 주어진 권한을 사용하여 로그를 CloudWatch Logs에 업로드 하며, 콘솔에서 로그가 보이지 않으면 실행 역할 권한을 확인해야 한다.
 
 ![cloudwatch_dashboard](images/cloudwatch_dashboard.png)
 
 ![cloudwatch_logs](images/cloudwatch_logs.png)
+
+## ■ AWS X-Ray 사용 (Google Cloud Stack Driver Trace와 유사 기능)
+
+- AWS X-Ray를 사용하여 애플리케이션의 구성 요소를 시각화하고, 성능 병목 현상을 식별하고, 오류가 발생한 요청을 문제 해결할 수 있다.
+- Lambda 함수는 추적 데이터를 X-Ray로 보내고, X-Ray는 데이터를 처리하여 서비스 맵과 검색 가능한 추적 요약을 생성한다.
+
+- AWS X-Ray를 사용하기 위해서는 함수에 추적 데이터를 X-Ray로 업로드할 권한이 있어야 한다.
+- Lambda 콘솔에서 적극 추적을 활성화하면 Lambda가 필요한 권한을 함수의 실행 역할에 추가해 준다. 그렇지 않으면 실행 역할에 `AWSXRayDaemonWriteAccess` 정책을 추가해야 한다.
+	- X-Ray는 여전히 애플리케이션이 처리하는 요청에 대한 대표 샘플을 제공하면서 트레이스가 효율적일 수 있도록 샘플링 알고리즘을 적용한다.
+	- 기본 샘플링 규칙은 초당 요청이 1개이며 추가 요청의 5% 이다.
+
+### [설정 방법]
+
+- 추적 헤더가 없는 요청을 추적하려면 함수의 구성에서 적극 추적을 활성화하면 된다. 이후 `저장` 필수
+	- 함수 트레이스 기능을 활성화할 때 AWS Lambda에서 자동으로 X-Ray 데몬을 실행한다.
+
+![awsxray](images/awsxray.png)
+
+- 설정된 해당 함수의 X-Ray 트레이스를 확인할 수 있다.
+
+![xraytrace](images/xraytrace.png)
+
+- 각 트레이스별 타임라인도 상세 확인이 가능하다.
+
+![tracetimeline](images/tracetimeline.png)
