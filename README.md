@@ -229,7 +229,7 @@ If your browser does not open automatically, please open it &  open the URL belo
 
 ![adduser2](images/adduser2.png)
 
-- Access Key ID 와 비밀 Access Key를 잘 기억하고, 노출되지 않도록 보안에 유의한다.
+- Access Key ID 와 비밀 Access Key를 잘 기억하고, 노출되지 않도록 보안에 유의한다. (.csv 파일 다운로드)
 
 ![adduser3](images/adduser3.png)
 
@@ -696,3 +696,113 @@ exports.createBook = (event, ctx, cb) => {
 - 각 트레이스별 타임라인도 상세 확인이 가능하다.
 
 ![tracetimeline](images/tracetimeline.png)
+
+---
+
+# ■ Amazon DynamoDB 활용하기 [![Sources](https://img.shields.io/badge/출처-DynamoDB-yellow)](https://docs.aws.amazon.com/ko_kr/amazondynamodb/latest/developerguide/Introduction.html)
+
+- 본 실습에서는 Visual Studio Code를 사용하여 Node.js를 기반으로 AWS 자습서 code를 실습해 봅니다.
+
+### Pre-requisites (AWS DynamoDB)
+
+1. 1단계: 자격 증명 구성 (앞 단계에서 수행하여 pass)
+2. 2단계: 프로젝트용 패키지 JSON 생성 (해당 디렉토리에 package.json 파일 생성)
+
+```bash
+$ npm init
+```
+
+3. 3단계: SDK 및 종속성 설치
+
+```bash
+npm install aws-sdk
+
++ aws-sdk@2.661.0
+added 14 packages from 66 contributors and audited 17 packages in 18.417s
+found 0 vulnerabilities
+```
+#### Create Table
+
+- Amazon DynamoDB Endpoint 설정 : `AWS.config.update({endpoint: "https://dynamodb.aws-region.amazonaws.com"});`
+
+<MoviesCreateTable.js>
+
+```js
+var AWS = require("aws-sdk");
+
+AWS.config.update({
+  region: "us-east-2",
+  endpoint: "https://dynamodb.us-east-2.amazonaws.com"
+});
+
+var dynamodb = new AWS.DynamoDB();
+
+var params = {
+    TableName : "Movies",
+    KeySchema: [       
+        { AttributeName: "year", KeyType: "HASH"},  //Partition key
+        { AttributeName: "title", KeyType: "RANGE" }  //Sort key
+    ],
+    AttributeDefinitions: [       
+        { AttributeName: "year", AttributeType: "N" },
+        { AttributeName: "title", AttributeType: "S" }
+    ],
+    ProvisionedThroughput: {       
+        ReadCapacityUnits: 10, 
+        WriteCapacityUnits: 10
+    }
+};
+
+dynamodb.createTable(params, function(err, data) {
+    if (err) {
+        console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+        console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
+    }
+});
+```
+- 생성 코드 실행
+
+```js
+$ node MoviesCreateTable.js
+
+Created table. Table description JSON: {
+  "TableDescription": {
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "title",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "year",
+        "AttributeType": "N"
+      }
+    ],
+    "TableName": "Movies",
+    "KeySchema": [
+      {
+        "AttributeName": "year",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "title",
+        "KeyType": "RANGE"
+      }
+    ],
+    "TableStatus": "CREATING",
+    "CreationDateTime": "2020-04-23T02:08:12.680Z",
+    "ProvisionedThroughput": {
+      "NumberOfDecreasesToday": 0,
+      "ReadCapacityUnits": 10,
+      "WriteCapacityUnits": 10
+    },
+    "TableSizeBytes": 0,
+    "ItemCount": 0,
+    "TableArn": "arn:aws:dynamodb:us-east-2:514157201968:table/Movies",
+    "TableId": "f24a989f-8e61-4012-9a25-80b00de27618"
+  }
+}
+```
+
+![createtable](images/createtable.png)
+
