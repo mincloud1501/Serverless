@@ -715,7 +715,7 @@ $ npm init
 3. 3단계: SDK 및 종속성 설치
 
 ```bash
-npm install aws-sdk
+$ npm install aws-sdk
 
 + aws-sdk@2.661.0
 added 14 packages from 66 contributors and audited 17 packages in 18.417s
@@ -805,4 +805,59 @@ Created table. Table description JSON: {
 ```
 
 ![createtable](images/createtable.png)
+
+- 샘플 데이터 업로드 (moviedata.json, MoviesLoadData.js)
+
+#### AWS Lambda Function 생성
+
+- `dynamodb-doc`이라는 라이브러리를 이용하면 간단히 DynamoDB와 통신할 수 있다.
+
+```bash
+$ npm init
+$ npm install dynamodb-doc
+
++ dynamodb-doc@1.0.0
+added 1 package from 3 contributors and audited 35 packages in 1.67s
+found 0 vulnerabilities
+```
+
+```bash
+$ sls create -t aws-nodejs -p dynamodb-serverless
+```
+- 해당 사용자에 `AmazonDynamoDBFullAccess` 권한을 추가한다.
+
+- 특정 주소로 요청이 오면 해당 함수가 실행되도록 `트리거 추가`를 눌러 `API Gateway`를 추가한다.
+
+![makeapigateway](images/makeapigateway.png)
+
+- `serverless.yml` 편집
+
+```js
+service: dynamodb-serverless
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  stage: dev
+  region: us-east-2
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+  environment:
+    DYNAMODB_TABLE: Movies
+```
+
+```bash
+$dynamodb-serverless$ sls deploy
+```
 
