@@ -1,32 +1,18 @@
-const doc = require('dynamodb-doc');
-const dynamo = new doc.DynamoDB();
+'use strict';
 
-exports.handler.dynamodb = (event, context, callback) => { 
-  const operation = event.httpMethod;
-  const payload = { 
-    TableName: 'Movies'
-  } 
+module.exports.dynamoDB = async event => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      {
+        message: 'Go Serverless v1.0! Your function executed successfully!',
+        input: event,
+      },
+      null,
+      2
+    ),
+  };
 
-  switch (operation) { 
-    case'POST':
-      dynamo.putItem(payload, callback);
-      break;
-    case 'PATCH':
-      dynamo.updateItem(payload, callback);
-      break;
-    case 'DELETE':
-      dynamo.deleteItem(payload, callback);
-      break;
-    case 'GET':
-      dynamo.scan(payload, (err, data) => {
-          callback(null, {
-              'statusCode': 200,
-              'headers': {},
-              'body': JSON.stringify(data)
-           });
-      });
-      break;
-    default:
-      callback(new Error(`Unrecognized operation "${operation}"`));
-    }
+  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
+  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };

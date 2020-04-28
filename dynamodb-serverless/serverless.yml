@@ -61,14 +61,13 @@ provider:
 #  exclude:
 #    - exclude-me.js
 #    - exclude-me-dir/**
-
 functions:
-  hello:
-    handler: handler.dynamodb
-    events: 
+  readMovie:
+    handler: src/movies.readMovie
+    events:
       - http:
-          path: /
-          method: ANY
+          path: movies
+          method: get
 #  hello:
 #    handler: handler.hello
 #    The following are a few example events you can configure
