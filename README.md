@@ -828,7 +828,7 @@ $ sls create -t aws-nodejs -p dynamodb-serverless
 ```
 - IAM Management Console에서 해당 사용자에 `AWSLambdaBasicExecutionRole` 권한 및 getItem에 DynamoDB Read권한을 추가한다.
 
-![connecpolicy.png](images/connecpolicy.png.png)
+![connectpolicy.png](images/connectpolicy.png)
 
 - 특정 주소로 요청이 오면 해당 함수가 실행되도록 `트리거 추가`를 눌러 `API Gateway`를 추가한다.
 
