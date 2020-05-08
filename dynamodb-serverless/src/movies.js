@@ -20,20 +20,20 @@ var params = {
     }
 };
 
-///////////////////////////////////////////////////////////////////////////
-
-const createResponse = (status, body) => ({
-  statusCode: status,
-  body: JSON.stringify(body)
-});
 
 exports.readMovie = (event, ctx, callback) => {
+
+  ctx.callbackWaitsForEmptyEventLoop = false;
 
   docClient.get(params, function(err, data) {
       if (err) {
           console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
       } else {
           console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+          callback(null, {
+              statusCode: 200,
+              body: JSON.stringify(data, null, 2)
+          });
       }
   });
 };
