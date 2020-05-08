@@ -11,6 +11,12 @@
 
 ![concept](images/concept.png)
 
+### Serverless Trends
+
+- 현재까지는 압도적으로 AWS Lambda의 사용률 및 관심이 높은 상황이다. 본 연구에서는 이 AWS Lambda를 사용하여 실습해 본다.
+
+![trends](images/trends.png)
+
 ---
 
 ## ■ Serverless Concept
@@ -412,6 +418,12 @@ Serverless: Run the "serverless" command to setup monitoring, troubleshooting an
 - serverless.yml에서 수정 후 deploy한 `hello-serverless-dev-hello` 함수가 생성되어 있음을 확인할 수 있다.
 
 ![deploy](images/deploy.png)
+
+### Service 삭제하기
+
+```bash
+$ serverless remove
+```
 
 ---
 
@@ -847,17 +859,6 @@ provider:
   stage: dev
   region: us-east-2
 
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
-
   environment:
     DYNAMODB_TABLE: Movies
 
@@ -877,3 +878,7 @@ $dynamodb-serverless$ sls deploy
 - 테스트 이벤트 `readMovie` 생성하여 테스트를 수행해 본다.
 
 ![readmovietestresult](images/readmovietestresult.png)
+
+- 해당 결과는 Postman을 통해서도 확인해 볼 수 있다.
+
+![readmovietestresult2](images/readmovietestresult2.png)
